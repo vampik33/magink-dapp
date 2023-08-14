@@ -1,0 +1,6 @@
+[workspace]
+members = [
+    "magink",
+    "wizard",
+    "wizard_standalone",
+]

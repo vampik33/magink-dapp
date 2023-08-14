@@ -8,3 +8,6 @@ yarn.lock
 
 # Mac turds
 .DS_Store
+
+target
+.idea
