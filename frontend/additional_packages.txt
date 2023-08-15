@@ -1,0 +1,27 @@
+yarn add react-app-rewired
+yarn add util
+yarn add crypto-browserify
+yarn add buffer
+yarn add stream-browserify
+
+
+In your package.json, modify the scripts to use react-app-rewired:
+"scripts": {
+  "start": "react-app-rewired start",
+  "build": "react-app-rewired build",
+  "test": "react-app-rewired test",
+  "eject": "react-scripts eject"
+}
+
+
+Create a config-overrides.js file in your project root.
+Add the following to config-overrides.js:
+module.exports = function override(config, env) {
+    config.resolve.fallback = {
+        ...config.resolve.fallback,
+        "crypto": require.resolve("crypto-browserify"),
+        "buffer": require.resolve("buffer"),
+        "stream": require.resolve("stream-browserify")
+    };
+    return config;
+};

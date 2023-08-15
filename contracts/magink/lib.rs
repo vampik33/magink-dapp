@@ -47,7 +47,7 @@ pub mod magink {
         fn get_wizard_contract_code_hash() -> Hash {
             let mut bytes_array = [0u8; 32];
             if let Err(e) = hex::decode_to_slice(
-                &"0x6dbe6fc60833f0f8cf4d68e8b178b6efb2498faa499d9b6b7389cfea5e80b559" // Don't like this hardcoded hash
+                &"0x6dbe6fc60833f0f8cf4d68e8b178b6efb2498faa499d9b6b7389cfea5e80b559" // Don't like this hardcoded hash (but that way we instantiate wizard contract inside magink, so it would be the owner)
                     [2..],
                 &mut bytes_array,
             ) {

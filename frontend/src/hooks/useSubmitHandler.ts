@@ -21,7 +21,7 @@ export const useSubmitHandler = () => {
         setSubmitting(false);
       }
 
-      if (!result?.status.isInBlock) return;
+      //if (!result?.status.isInBlock) return;
 
       setSubmitting(false);
     });

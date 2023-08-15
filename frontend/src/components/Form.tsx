@@ -10,13 +10,16 @@ import InkFacts from './InkFacts';
 
 interface Props {
   awake: () => void;
+  mint: () => void;
   isAwake: boolean;
+  isClaimed: boolean;
+  isMinted: boolean;
   badges: number;
   remainingBlocks: number;
   runtimeError?: any;
 }
 
-export const MaginkForm = ({ awake, isAwake, remainingBlocks, runtimeError, badges }: Props) => {
+export const MaginkForm = ({ awake, mint, isAwake, isClaimed, isMinted, remainingBlocks, runtimeError, badges }: Props) => {
   const { isSubmitting, isValid } = useFormikContext<Values>();
   const { claimDryRun, magink } = useMaginkContract();
   const { account } = useWallet();
@@ -31,7 +34,18 @@ export const MaginkForm = ({ awake, isAwake, remainingBlocks, runtimeError, badg
   }
   return (
     <Form>
-      {account && !isAwake && (
+      {account && isAwake && isClaimed && (
+        <>
+        <p>Press Mint for minting new NFT</p>
+        <br/>
+        <Button type="button"
+          disabled={isSubmitting || !isValid || !hasFunds || isMinted } onClick={mint}>
+          Mint
+        </Button>
+        </>
+      )}
+
+      {account && !isAwake && !isClaimed && (
         <>
         <p>Press Start for ten swanky lessons about ink! and Astar Network</p>
         <br/>
@@ -43,13 +57,13 @@ export const MaginkForm = ({ awake, isAwake, remainingBlocks, runtimeError, badg
       )}
 
       <div className="group">
-        {account && isAwake && (
+        {account && isAwake && !isClaimed && (
           <>
             <InkFacts badges={badges} />
             <br />
             <Button
               type="submit"
-              disabled={isSubmitting || !isValid || (remainingBlocks != 0 && !isFirtsClaim) || badges >= 9}
+              disabled={isSubmitting || !isValid || (remainingBlocks != 0 && !isFirtsClaim) || badges >= 1}
             >
               Claim badge
             </Button>
@@ -61,7 +75,7 @@ export const MaginkForm = ({ awake, isAwake, remainingBlocks, runtimeError, badg
           </Button>
         )}
       </div>
-      {remainingBlocks != 0 && isAwake && badges <= 9 && !isFirtsClaim && (
+      {remainingBlocks != 0 && isAwake && badges <= 1 && !isFirtsClaim && (
         <div className="text-xs text-left mb-2 text-gray-200">
           Claim a new badge after {remainingBlocks} blocks
         </div>

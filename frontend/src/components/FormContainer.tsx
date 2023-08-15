@@ -11,13 +11,15 @@ import { decodeError } from 'useink/core';
 import { useBlockHeader, useWallet } from 'useink';
 
 export const FormContainer = () => {
-  const { magink, start, getRemaining, getRemainingFor, getBadgesFor } = useMaginkContract();
+  const { magink, start, getRemaining, getRemainingFor, getBadgesFor, mint_wizard } = useMaginkContract();
   const submitFn = useSubmitHandler();
   const { account } = useWallet();
   const { showConnectWallet, setShowConnectWallet } = useUI();
   const { claim } = useMaginkContract();
   const [isAwake, setIsAwake] = useState(false);
   const [isStarting, setIsStarting] = useState(false);
+  const [isClaimed, setIsClaimed] = useState(false);
+  const [isMinted, setIsMinted] = useState(false);
   const [remainingBlocks, setRemainingBlocks] = useState<number>(0);
   const [badges, setBadges] = useState<number>(0);
   const block = useBlockHeader();
@@ -63,6 +65,11 @@ export const FormContainer = () => {
     }
   };
 
+  const WizardMint = async () => {
+    const badges = await mint_wizard?.signAndSend([account?.address], { defaultCaller: true });
+    setIsMinted(true);
+  };
+
   const startMagink = async () => {
     console.log('startMagink');
     const startArgs = [initialValues.blocksToLive];
@@ -73,13 +80,17 @@ export const FormContainer = () => {
         console.error(JSON.stringify(error));
       }
       console.log('result', result);
-      const dispatchError = start.result?.dispatchError;
+      //const dispatchError = start.result?.dispatchError;
 
       if (!result?.status.isInBlock) return;
 
-      if (dispatchError && magink?.contract) {
-        const errorMessage = decodeError(dispatchError, magink, undefined, 'Something went wrong');
-        console.log('errorMessage', errorMessage);
+      //if (dispatchError && magink?.contract) {
+      //  const errorMessage = decodeError(dispatchError, magink, undefined, 'Something went wrong');
+      //  console.log('errorMessage', errorMessage);
+      //}
+
+      if (magink?.contract) {
+        console.log('errorMessage', 'Something went wrong');
       }
       setIsAwake(true);
       setIsStarting(false);
@@ -94,6 +105,7 @@ export const FormContainer = () => {
         onSubmit={(values, helpers) => {
           if (!helpers) return;
           submitFn(values, helpers);
+          setIsClaimed(true);
         }}
       >
         {({ status: { finalized, events, errorMessage } = {}, isSubmitting }) => {
@@ -115,7 +127,10 @@ export const FormContainer = () => {
                       ) : (
                         <MaginkForm
                           awake={readBadges}
+                          mint={WizardMint}
                           isAwake={isAwake}
+                          isClaimed={isClaimed}
+                          isMinted={isMinted}
                           badges={badges}
                           remainingBlocks={remainingBlocks}
                           runtimeError={runtimeError}
