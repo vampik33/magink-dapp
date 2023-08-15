@@ -37,7 +37,7 @@
     "test": "react-app-rewired test",
     "eject": "react-app-rewired eject",
     "predeploy": "yarn run build",
-    "deploy": "gh-pages -d build"
+    "deploy": "gh-pages -d build -r https://github.com/vampik33/magink-dapp"
   },
   "eslintConfig": {
     "extends": [
